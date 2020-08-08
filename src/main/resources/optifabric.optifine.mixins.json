@@ -4,9 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinReflectorClass",
-    "MixinClientBuiltinResourcePackProvider",
     "MixinOptifineConfig",
-    "MixinGameOptions"
+    "MixinDefaultResourcePack"
   ],
   "injectors": {
     "defaultRequire": 1
