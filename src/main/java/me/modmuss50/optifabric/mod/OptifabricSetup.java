@@ -31,7 +31,7 @@ public class OptifabricSetup implements Runnable {
 
 		try {
 			OptifineSetup optifineSetup = new OptifineSetup();
-			Pair<File, ClassCache> runtime = optifineSetup.getRuntime();
+			Pair<File, ClassCache> runtime = OptifineSetup.getRuntime();
 
 			//Add the optifine jar to the classpath, as
 			ClassTinkerers.addURL(runtime.getLeft().toURI().toURL());

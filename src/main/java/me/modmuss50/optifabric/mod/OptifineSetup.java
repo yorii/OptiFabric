@@ -1,52 +1,43 @@
 package me.modmuss50.optifabric.mod;
 
-import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.LambadaRebuiler;
-import me.modmuss50.optifabric.patcher.PatchSplitter;
-import me.modmuss50.optifabric.patcher.RemapUtils;
-import me.modmuss50.optifabric.util.ZipUtils;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.launch.common.FabricLauncher;
-import net.fabricmc.loader.launch.common.FabricLauncherBase;
-import net.fabricmc.loader.launch.common.MappingConfiguration;
-import net.fabricmc.loader.launch.knot.Knot;
-import net.fabricmc.loader.util.UrlConversionException;
-import net.fabricmc.loader.util.UrlUtil;
-import net.fabricmc.loader.util.mappings.TinyRemapperMappingsHelper;
-import net.fabricmc.mapping.reader.v2.TinyMetadata;
-import net.fabricmc.mapping.tree.ClassDef;
-import net.fabricmc.mapping.tree.TinyTree;
-import net.fabricmc.tinyremapper.IMappingProvider;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.launch.common.FabricLauncherBase;
+import net.fabricmc.loader.util.UrlConversionException;
+import net.fabricmc.loader.util.UrlUtil;
+import net.fabricmc.loader.util.mappings.TinyRemapperMappingsHelper;
+import net.fabricmc.mapping.tree.ClassDef;
+import net.fabricmc.mapping.tree.TinyTree;
+import net.fabricmc.tinyremapper.IMappingProvider;
+import net.fabricmc.tinyremapper.IMappingProvider.Member;
+
+import me.modmuss50.optifabric.patcher.ClassCache;
+import me.modmuss50.optifabric.patcher.LambadaRebuiler;
+import me.modmuss50.optifabric.patcher.PatchSplitter;
+import me.modmuss50.optifabric.patcher.RemapUtils;
+import me.modmuss50.optifabric.util.ZipUtils;
+
 public class OptifineSetup {
+	public static Pair<File, ClassCache> getRuntime() throws Throwable {
+		File workingDir = new File(FabricLoader.getInstance().getGameDirectory(), ".optifine");
 
-	private File workingDir = new File(FabricLoader.getInstance().getGameDirectory(), ".optifine");
-	private File versionDir;
-	private MappingConfiguration mappingConfiguration = new MappingConfiguration();
-
-	private FabricLauncher fabricLauncher = FabricLauncherBase.getLauncher();
-
-
-	public Pair<File, ClassCache> getRuntime() throws Throwable {
 		if (!workingDir.exists()) {
 			workingDir.mkdirs();
 		}
@@ -54,7 +45,7 @@ public class OptifineSetup {
 
 		byte[] modHash = fileHash(optifineModJar);
 
-		versionDir = new File(workingDir, OptifineVersion.version);
+		File versionDir = new File(workingDir, OptifineVersion.version);
 		if (!versionDir.exists()) {
 			versionDir.mkdirs();
 		}
@@ -150,7 +141,7 @@ public class OptifineSetup {
 		return Pair.of(remappedJar, classCache);
 	}
 
-	private void remapOptifine(Path input, File remappedJar) throws Exception {
+	private static void remapOptifine(Path input, File remappedJar) throws Exception {
 		String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
 		System.out.println("Remapping optifine to :" + namespace);
 
@@ -161,49 +152,33 @@ public class OptifineSetup {
 	}
 
 	//Optifine currently has two fields that match the same name as Yarn mappings, we'll rename Optifine's to something else
-	IMappingProvider createMappings(String from, String to) {
+	private static IMappingProvider createMappings(String from, String to) {
+		TinyTree normalMappings = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
+
+		Map<String, ClassDef> nameToClass = normalMappings.getClasses().stream().collect(Collectors.toMap(clazz -> clazz.getName("intermediary"), Function.identity()));
+		Map<Member, String> extraFields = new HashMap<>();
+
 		//In dev
-		if (fabricLauncher.isDevelopment()) {
-			try {
-				File fullMappings = extractMappings();
-				return (out) -> {
-					RemapUtils.getTinyRemapper(fullMappings, from, to).load(out);
-					//TODO use the mappings API here to stop neededing to change this each version
-					out.acceptField(new IMappingProvider.Member("dma", "CLOUDS", "Ldln;"),
-							"CLOUDS_OF");
-					out.acceptField(new IMappingProvider.Member("ebx", "renderDistance", "I"),
-							"renderDistance_OF");
-				};
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			ClassDef option = nameToClass.get("net/minecraft/class_316");
+			ClassDef cyclingOption = nameToClass.get("net/minecraft/class_4064");
+			extraFields.put(new Member(option.getName(from), "CLOUDS", 'L' + cyclingOption.getName(from) + ';'), "CLOUDS_OF");
+
+			ClassDef worldRenderer = nameToClass.get("net/minecraft/class_761");
+			extraFields.put(new Member(worldRenderer.getName(from), "renderDistance", "I"), "renderDistance_OF");
 		}
 
 		//In prod
-		TinyTree mappingsNew = new TinyTree() {
-			private final TinyTree mappings = mappingConfiguration.getMappings();
+		return (out) -> {
+			TinyRemapperMappingsHelper.create(normalMappings, from, to).load(out);
 
-			@Override
-			public TinyMetadata getMetadata() {
-				return mappings.getMetadata();
-			}
-
-			@Override
-			public Map<String, ClassDef> getDefaultNamespaceClassMap() {
-				return mappings.getDefaultNamespaceClassMap();
-			}
-
-			@Override
-			public Collection<ClassDef> getClasses() {
-				return mappings.getClasses();
-			}
+			extraFields.forEach(out::acceptField);
 		};
-		return TinyRemapperMappingsHelper.create(mappingsNew, from, to);
 	}
 
 	//Gets the minecraft librarys
-	List<Path> getLibs() {
-		return fabricLauncher.getLoadTimeDependencies().stream().map(url -> {
+	private static List<Path> getLibs() {
+		return FabricLauncherBase.getLauncher().getLoadTimeDependencies().stream().map(url -> {
 			try {
 				return UrlUtil.asPath(url);
 			} catch (UrlConversionException e) {
@@ -213,88 +188,32 @@ public class OptifineSetup {
 	}
 
 	//Gets the offical minecraft jar
-	Path getMinecraftJar() throws FileNotFoundException {
-		Optional<Path> entrypointResult = findFirstClass(Knot.class.getClassLoader(), Collections.singletonList("net.minecraft.client.main.Main"));
-		if (!entrypointResult.isPresent()) {
-			throw new RuntimeException("Failed to find minecraft jar");
-		}
-		if (!Files.exists(entrypointResult.get())) {
-			throw new RuntimeException("Failed to locate minecraft jar");
-		}
-		if (fabricLauncher.isDevelopment()) {
-			Path path = entrypointResult.get().getParent();
-			Path minecraftJar = path.resolve(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion)); //Lets hope you are using loom in dev
-			if (!Files.exists(minecraftJar)) {
-				return getNewMinecraftDevJar();
+	private static Path getMinecraftJar() throws FileNotFoundException {
+		List<Path> contextJars = ((net.fabricmc.loader.FabricLoader) FabricLoader.getInstance()).getGameProvider().getGameContextJars();
+
+		if (contextJars.isEmpty()) throw new IllegalStateException("Start has no context?");
+		Path minecraftJar = contextJars.get(0);
+
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			Path officialNames = minecraftJar.resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
+
+			if (Files.notExists(officialNames)) {
+				Path parent = minecraftJar.getParent().resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
+
+				if (Files.notExists(parent)) {
+					throw new AssertionError("Unable to find Minecraft dev jar! Tried " + officialNames + " and " + parent);
+				}
+
+				officialNames = parent;
 			}
-			return minecraftJar;
+
+			minecraftJar = officialNames;
 		}
-		return entrypointResult.get();
+
+		return minecraftJar;
 	}
 
-	//Loom 0.2.7 fallback
-	Path getNewMinecraftDevJar() throws FileNotFoundException {
-		Optional<Path> entrypointResult = getSource(Knot.class.getClassLoader(), "mappings/mappings.tiny");
-
-		if (entrypointResult.isPresent()) {
-			Path path = entrypointResult.get().getParent();
-			Path minecraftJar = path.resolve(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion)); //Lets hope you are using loom in dev
-			if (Files.exists(minecraftJar)) {
-				return minecraftJar;
-			}
-		}
-
-		throw new FileNotFoundException("Could not find minecraft jar!");
-	}
-
-	//Stolen from fabric loader
-	static Optional<Path> findFirstClass(ClassLoader loader, List<String> classNames) {
-		List<String> entrypointFilenames = classNames.stream().map((ep) -> ep.replace('.', '/') + ".class").collect(Collectors.toList());
-
-		for (int i = 0; i < entrypointFilenames.size(); i++) {
-			String className = classNames.get(i);
-			String classFilename = entrypointFilenames.get(i);
-			Optional<Path> classSourcePath = getSource(loader, classFilename);
-			if (classSourcePath.isPresent()) {
-				return Optional.of(classSourcePath.get());
-			}
-		}
-
-		return Optional.empty();
-	}
-
-	static Optional<Path> getSource(ClassLoader loader, String filename) {
-		URL url;
-		if ((url = loader.getResource(filename)) != null) {
-			try {
-				URL urlSource = UrlUtil.getSource(filename, url);
-				Path classSourceFile = UrlUtil.asPath(urlSource);
-
-				return Optional.of(classSourceFile);
-			} catch (UrlConversionException e) {
-				// TODO: Point to a logger
-				e.printStackTrace();
-			}
-		}
-
-		return Optional.empty();
-	}
-
-	//Extracts the devtime mappings out of yarn into a file
-	File extractMappings() throws IOException {
-		File extractedMappings = new File(versionDir, "mappings.tiny");
-		if (extractedMappings.exists()) {
-			extractedMappings.delete();
-		}
-		InputStream mappingStream = FabricLauncherBase.class.getClassLoader().getResourceAsStream("mappings/mappings.tiny");
-		FileUtils.copyInputStreamToFile(mappingStream, extractedMappings);
-		if (!extractedMappings.exists()) {
-			throw new RuntimeException("failed to extract mappings!");
-		}
-		return extractedMappings;
-	}
-
-	byte[] fileHash(File input) throws IOException {
+	private static byte[] fileHash(File input) throws IOException {
 		try (InputStream is = new FileInputStream(input)) {
 			return DigestUtils.md5(is);
 		}
