@@ -158,6 +158,10 @@ public class OptifineSetup {
 		Map<String, ClassDef> nameToClass = normalMappings.getClasses().stream().collect(Collectors.toMap(clazz -> clazz.getName("intermediary"), Function.identity()));
 		Map<Member, String> extraFields = new HashMap<>();
 
+		ClassDef rebuildTask = nameToClass.get("net/minecraft/class_846$class_851$class_4578");
+		ClassDef builtChunk = nameToClass.get("net/minecraft/class_846$class_851");
+		extraFields.put(new Member(rebuildTask.getName(from), "this$1", 'L' + builtChunk.getName(from) + ';'), "field_20839");
+
 		//In dev
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			ClassDef option = nameToClass.get("net/minecraft/class_316");

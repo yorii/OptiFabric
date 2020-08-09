@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "me.modmuss50.optifabric.mixin",
+  "package": "me.modmuss50.optifabric.compat.indigo.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],

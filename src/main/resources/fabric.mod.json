@@ -25,7 +25,7 @@
     ]
   },
   "custom": {
-    "fabric-renderer-api-v1:contains_renderer" : true,
+    "fabric-renderer-indigo:force_compatibility" : true,
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
     ]
