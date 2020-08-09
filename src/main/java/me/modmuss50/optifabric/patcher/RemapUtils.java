@@ -16,8 +16,7 @@ public class RemapUtils {
 
 		TinyRemapper remapper = TinyRemapper.newRemapper().withMappings(mappings).renameInvalidLocals(true).rebuildSourceFilenames(true).build();
 
-		try {
-			OutputConsumerPath outputConsumer = new Builder(output).build();
+		try (OutputConsumerPath outputConsumer = new Builder(output).build()) {
 			outputConsumer.addNonClassFiles(input);
 			remapper.readInputs(input);
 
@@ -26,7 +25,6 @@ public class RemapUtils {
 			}
 
 			remapper.apply(outputConsumer);
-			outputConsumer.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to remap jar", e);
 		} finally {

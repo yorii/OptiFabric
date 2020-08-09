@@ -35,7 +35,7 @@ import me.modmuss50.optifabric.patcher.RemapUtils;
 import me.modmuss50.optifabric.util.ZipUtils;
 
 public class OptifineSetup {
-	public static Pair<File, ClassCache> getRuntime() throws Throwable {
+	public static Pair<File, ClassCache> getRuntime() throws IOException {
 		File workingDir = new File(FabricLoader.getInstance().getGameDirectory(), ".optifine");
 
 		if (!workingDir.exists()) {
@@ -141,7 +141,7 @@ public class OptifineSetup {
 		return Pair.of(remappedJar, classCache);
 	}
 
-	private static void remapOptifine(Path input, File remappedJar) throws Exception {
+	private static void remapOptifine(Path input, File remappedJar) throws IOException {
 		String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
 		System.out.println("Remapping optifine to :" + namespace);
 
