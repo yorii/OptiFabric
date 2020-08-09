@@ -5,14 +5,17 @@ import me.modmuss50.optifabric.util.RemappingUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OptifineFixer {
 
 	public static final OptifineFixer INSTANCE = new OptifineFixer();
 
-	private HashMap<String, List<ClassFixer>> classFixes = new HashMap<>();
-	private List<String> skippedClass = new ArrayList<>();
+	private final Map<String, List<ClassFixer>> classFixes = new HashMap<>();
+	private final Set<String> skippedClass = new HashSet<>();
 
 	private OptifineFixer() {
 		//net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk
@@ -30,6 +33,9 @@ public class OptifineFixer {
 		//net/minecraft/client/render/item/HeldItemRenderer
 		registerFix("class_759", new HeldItemRendererFix());
 
+		//net/minecraft/client/render/item/HeldItemRenderer$1
+		skipClass("class_759$1"); //Skip the unnecessary changes to the enum switch class
+		
 		//net/minecraft/client/texture/SpriteAtlasTexture
 		registerFix("class_1059", new SpriteAtlasTextureFix());
 
@@ -37,10 +43,7 @@ public class OptifineFixer {
 		registerFix("class_3898", new ThreadedAnvilChunkStorageFix());
 
 		//net/minecraft/client/particle/ParticleManager
-		skipClass("class_702");
-
-		//net/minecraft/client/render/item/HeldItemRenderer$1
-		skipClass("class_759$1");
+		skipClass("class_702"); //Skip a seemingly pointless patch to register particles by register name rather than ID
 	}
 
 	private void registerFix(String className, ClassFixer classFixer) {
