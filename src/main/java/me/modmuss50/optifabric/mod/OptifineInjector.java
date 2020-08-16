@@ -47,7 +47,6 @@ public class OptifineInjector {
 		}
 
 		//Remember the access we started with
-		int originAccess = target.access;
 		Object2IntMap<String> memberToAccess = new Object2IntArrayMap<>(target.methods.size());
 		memberToAccess.defaultReturnValue(-1);
 		for (MethodNode method : target.methods) {
@@ -82,7 +81,7 @@ public class OptifineInjector {
 		}
 
 		// Lets make every class we touch match the access it used to have
-		target.access = widerAccess(originAccess, target.access);
+		target.access = widerAccess(target.access, source.access);
 		for (MethodNode method : target.methods) {
 			int access = memberToAccess.getInt(method.name + method.desc);
 			if (access != -1) method.access = widerAccess(access, method.access);
