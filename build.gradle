@@ -43,14 +43,15 @@ dependencies {
 
 	modRuntime("me.shedaniel:RoughlyEnoughItems:4.10.5") {
 		exclude(group: "net.fabricmc.fabric-api")
-		exclude(group: "me.shedaniel.cloth.api", module: "cloth-client-events-v0")
 	}
-	modCompileOnly("me.shedaniel.cloth.api:cloth-client-events-v0:1.0.8") {
-		transitive(false)
-	}
-
-	modRuntime("TechReborn:TechReborn-1.16:3.4.5+build.95") {
+	modRuntime("RebornCore:RebornCore-1.16:4.3.4+build.65") {
+		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntime("TechReborn:TechReborn-1.16:3.4.5+build.96") {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+		exclude(group: "RebornCore") //TR depends purely on the newest version
 	}
 }
 
