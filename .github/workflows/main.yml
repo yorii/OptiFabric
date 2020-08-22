@@ -25,4 +25,5 @@ jobs:
         uses: actions/upload-artifact@v2.1.4
         with:
           name: Optifabric-Artifact
-          path: build/libs/optifabric-1.1.0.jar
+          path: build/libs/optifabric-[[:digit:].].jar
+          if-no-files-found: error
