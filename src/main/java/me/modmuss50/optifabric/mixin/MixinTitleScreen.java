@@ -44,7 +44,7 @@ public abstract class MixinTitleScreen extends Screen {
 
 			int int_6 = MathHelper.ceil(fadeColor * 255.0F) << 24;
 			if ((int_6 & -67108864) != 0) {
-				this.drawStringWithShadow(matrices, this.textRenderer, OptifineVersion.version, 2, this.height - 20, 16777215 | int_6);
+				textRenderer.drawWithShadow(matrices, OptifineVersion.version, 2, this.height - 20, 16777215 | int_6);
 			}
 		}
 	}
