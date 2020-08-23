@@ -45,19 +45,19 @@ dependencies {
 	modImplementation "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 
-	modRuntime("me.shedaniel:RoughlyEnoughItems:4.10.5") {
+	modRuntime("me.shedaniel:RoughlyEnoughItems:5.2.3") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modRuntime("RebornCore:RebornCore-1.16:4.3.4+build.65") {
+	modRuntime("RebornCore:RebornCore-1.16:4.4.0+build.67") {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modRuntime("TechReborn:TechReborn-1.16:3.4.5+build.96") {
+	modRuntime("TechReborn:TechReborn-1.16:3.5.1+build.101") {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "RebornCore") //TR depends purely on the newest version
 	}
-	modRuntime("com.jamieswhiteshirt:clothesline-fabric:0.2.0+1.16.1") {
+	modRuntime("com.jamieswhiteshirt:clothesline-fabric:0.2.1+1.16.2") {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
