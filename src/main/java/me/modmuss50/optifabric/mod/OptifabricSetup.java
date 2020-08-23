@@ -53,8 +53,13 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.indigofix.mixins.json");
 		}
 
-		if (FabricLoader.getInstance().isModLoaded("fabric-item-api-v1")) {
-			Mixins.addConfiguration("optifabric.compat.fabric-item-api.mixins.json");
+		try {
+			if (FabricLoader.getInstance().isModLoaded("fabric-item-api-v1") && isVersionValid("fabric-item-api-v1", ">=1.1.0")) {
+				Mixins.addConfiguration("optifabric.compat.fabric-item-api.mixins.json");
+			}
+		} catch (VersionParsingException e) {
+			//Let's just gamble on the version not being valid so also not being a problem
+			e.printStackTrace();
 		}
 
 		Mixins.addConfiguration("optifabric.optifine.mixins.json");
