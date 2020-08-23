@@ -39,9 +39,6 @@ public class OptifineFixer {
 		//net/minecraft/client/texture/SpriteAtlasTexture
 		registerFix("class_1059", new SpriteAtlasTextureFix());
 
-		//net/minecraft/server/world/ThreadedAnvilChunkStorage
-		registerFix("class_3898", new ThreadedAnvilChunkStorageFix());
-
 		//net/minecraft/client/particle/ParticleManager
 		skipClass("class_702"); //Skip a seemingly pointless patch to register particles by register name rather than ID
 	}
