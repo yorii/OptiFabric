@@ -29,7 +29,7 @@ import net.fabricmc.tinyremapper.IMappingProvider;
 import net.fabricmc.tinyremapper.IMappingProvider.Member;
 
 import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.LambadaRebuiler;
+import me.modmuss50.optifabric.patcher.LambdaRebuiler;
 import me.modmuss50.optifabric.patcher.PatchSplitter;
 import me.modmuss50.optifabric.patcher.RemapUtils;
 import me.modmuss50.optifabric.util.ZipUtils;
@@ -102,7 +102,7 @@ public class OptifineSetup {
 		}, jarOfTheFree);
 
 		System.out.println("Building lambada fix mappings");
-		LambadaRebuiler rebuiler = new LambadaRebuiler(jarOfTheFree, getMinecraftJar().toFile());
+		LambdaRebuiler rebuiler = new LambdaRebuiler(jarOfTheFree, getMinecraftJar().toFile());
 		rebuiler.buildLambadaMap();
 
 		System.out.println("Remapping optifine with fixed lambada names");
