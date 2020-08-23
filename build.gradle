@@ -32,6 +32,7 @@ repositories {
 		name = "Clothesline"
 		url 'https://maven.jamieswhiteshirt.com/libs-release/'
 	}
+	maven { url 'https://www.cursemaven.com' }
 	maven { url 'https://jitpack.io' }
 }
 
@@ -62,6 +63,7 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntime "curse.maven:trumpet-skeleton-fabric:3033242"
 }
 
 task unzip(type: Copy) {

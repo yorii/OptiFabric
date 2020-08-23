@@ -30,12 +30,6 @@ public class OptifineFixer {
 		//net/minecraft/client/Keyboard
 		registerFix("class_309", new KeyboardFix());
 
-		//net/minecraft/client/render/item/HeldItemRenderer
-		registerFix("class_759", new HeldItemRendererFix());
-
-		//net/minecraft/client/render/item/HeldItemRenderer$1
-		skipClass("class_759$1"); //Skip the unnecessary changes to the enum switch class
-		
 		//net/minecraft/client/texture/SpriteAtlasTexture
 		registerFix("class_1059", new SpriteAtlasTextureFix());
 

@@ -66,6 +66,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("clothesline")) {
 			Mixins.addConfiguration("optifabric.compat.clothesline.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("trumpet-skeleton")) {
+			Mixins.addConfiguration("optifabric.compat.trumpet-skeleton.mixins.json");
+		}
 	}
 
 	//I check the version like this as I want to show issues on our error screen
