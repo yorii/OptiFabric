@@ -46,6 +46,7 @@ dependencies {
 	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 
 	modRuntime("me.shedaniel:RoughlyEnoughItems:5.2.3") {
+		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modRuntime("RebornCore:RebornCore-1.16:4.4.0+build.67") {
