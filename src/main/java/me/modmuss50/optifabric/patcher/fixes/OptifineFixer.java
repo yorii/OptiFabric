@@ -1,7 +1,5 @@
 package me.modmuss50.optifabric.patcher.fixes;
 
-import me.modmuss50.optifabric.util.RemappingUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.fabricmc.loader.api.FabricLoader;
+
+import me.modmuss50.optifabric.compat.patchouli.ModelOverrideListFix;
+import me.modmuss50.optifabric.util.RemappingUtils;
 
 public class OptifineFixer {
 
@@ -35,6 +38,11 @@ public class OptifineFixer {
 
 		//net/minecraft/client/particle/ParticleManager
 		skipClass("class_702"); //Skip a seemingly pointless patch to register particles by register name rather than ID
+
+		if (FabricLoader.getInstance().isModLoaded("patchouli")) {
+			//net/minecraft/client/render/model/json/ModelOverrideList
+			registerFix("class_806", new ModelOverrideListFix());
+		}
 	}
 
 	private void registerFix(String className, ClassFixer classFixer) {
