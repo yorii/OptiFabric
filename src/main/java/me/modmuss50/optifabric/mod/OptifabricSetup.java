@@ -53,13 +53,8 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.indigofix.mixins.json");
 		}
 
-		try {
-			if (FabricLoader.getInstance().isModLoaded("fabric-item-api-v1") && isVersionValid("fabric-item-api-v1", ">=1.1.0")) {
-				Mixins.addConfiguration("optifabric.compat.fabric-item-api.mixins.json");
-			}
-		} catch (VersionParsingException e) {
-			//Let's just gamble on the version not being valid so also not being a problem
-			e.printStackTrace();
+		if (isPresent("fabric-item-api-v1", ">=1.1.0")) {
+			Mixins.addConfiguration("optifabric.compat.fabric-item-api.mixins.json");
 		}
 
 		Mixins.addConfiguration("optifabric.optifine.mixins.json");
@@ -74,6 +69,10 @@ public class OptifabricSetup implements Runnable {
 
 		if (FabricLoader.getInstance().isModLoaded("trumpet-skeleton")) {
 			Mixins.addConfiguration("optifabric.compat.trumpet-skeleton.mixins.json");
+		}
+
+		if (isPresent("multiconnect", ">1.3.14")) {
+			Mixins.addConfiguration("optifabric.compat.multiconnect.mixins.json");
 		}
 	}
 
@@ -136,6 +135,15 @@ public class OptifabricSetup implements Runnable {
 			throw new RuntimeException("Failed to setup optifine", e);
 		}
 		return true;
+	}
+
+	private boolean isPresent(String modID, String versionRange) {
+		try {
+			return FabricLoader.getInstance().isModLoaded(modID) && isVersionValid(modID, versionRange);
+		} catch (VersionParsingException e) {
+			e.printStackTrace();
+			return false; //Let's just gamble on the version not being valid so also not being a problem
+		}
 	}
 
 	private boolean isVersionValid(String modID, String validVersion) throws VersionParsingException {
