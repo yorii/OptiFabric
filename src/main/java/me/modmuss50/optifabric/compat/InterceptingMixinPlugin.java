@@ -1,5 +1,6 @@
 package me.modmuss50.optifabric.compat;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,10 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.transformer.ClassInfo.Method;
+import org.spongepowered.asm.service.MixinService;
 import org.spongepowered.asm.util.Annotations;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 import me.modmuss50.optifabric.util.MixinFinder;
 import me.modmuss50.optifabric.util.MixinFinder.Mixin;
@@ -35,7 +39,14 @@ public class InterceptingMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return true;
+		try {
+			ClassNode mixin = MixinService.getService().getBytecodeProvider().getClassNode(mixinClassName, false);
+			return Annotations.getInvisible(mixin, DevOnly.class) == null || FabricLoader.getInstance().isDevelopmentEnvironment();
+		} catch (ClassNotFoundException | IOException e) {
+			System.err.println("Error fetching " + mixinClassName + " transforming " + targetClassName);
+			e.printStackTrace();
+			return true; //Possibly should be returning false if it can't be found?
+		}
 	}
 
 	@Override

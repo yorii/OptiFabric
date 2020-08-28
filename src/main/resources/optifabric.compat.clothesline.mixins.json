@@ -3,7 +3,8 @@
 	"package": "me.modmuss50.optifabric.compat.clothesline.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
-		"WorldRendererMixin"
+		"WorldRendererMixin",
+		"BufferBuilderStorageFix"
 	],
 	"plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
 	"injectors": {
