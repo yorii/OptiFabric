@@ -19,6 +19,6 @@ abstract class BufferBuilderStorageFix {
 		assignBufferBuilder(builderStorage, layer);
 	}
 
-	@Shadow
+	@Shadow(remap = false) //Avoid remapping to allow building
 	private static native void assignBufferBuilder(Object2ObjectLinkedOpenHashMap<RenderLayer, BufferBuilder> builderStorage, RenderLayer layer);
 }
