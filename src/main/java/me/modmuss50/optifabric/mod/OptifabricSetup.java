@@ -74,6 +74,10 @@ public class OptifabricSetup implements Runnable {
 		if (isPresent("multiconnect", ">1.3.14")) {
 			Mixins.addConfiguration("optifabric.compat.multiconnect.mixins.json");
 		}
+
+		if (isPresent("now-playing", ">=1.1.0")) {
+			Mixins.addConfiguration("optifabric.compat.now-playing.mixins.json");
+		}
 	}
 
 	//I check the version like this as I want to show issues on our error screen
@@ -141,6 +145,7 @@ public class OptifabricSetup implements Runnable {
 		try {
 			return FabricLoader.getInstance().isModLoaded(modID) && isVersionValid(modID, versionRange);
 		} catch (VersionParsingException e) {
+			System.err.println("Error comparing the version for ".concat(modID));
 			e.printStackTrace();
 			return false; //Let's just gamble on the version not being valid so also not being a problem
 		}
