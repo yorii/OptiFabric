@@ -121,11 +121,6 @@ public class OptifineSetup {
 			if(OptifineVersion.jarType == OptifineVersion.JarType.OPTFINE_INSTALLER){
 				optifineModJar.delete();
 			}
-
-			File extractedMappings = new File(versionDir, "mappings.tiny");
-			File fieldMappings = new File(versionDir, "mappings.full.tiny");
-			extractedMappings.delete();
-			fieldMappings.delete();
 		}
 
 		boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
