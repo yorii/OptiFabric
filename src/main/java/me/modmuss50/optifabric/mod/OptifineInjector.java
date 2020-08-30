@@ -117,7 +117,7 @@ public class OptifineInjector {
 
 	private ClassNode getSourceClassNode(ClassNode classNode) {
 		String name = classNode.name.replaceAll("\\.", "/") + ".class";
-		byte[] bytes = classCache.getAndRemove(name);
+		byte[] bytes = classCache.popClass(name);
 		if(bytes == null) {
 			throw new RuntimeException("Failed to find patched class for: " + name);
 		}

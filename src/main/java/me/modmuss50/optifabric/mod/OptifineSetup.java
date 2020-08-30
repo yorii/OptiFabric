@@ -51,7 +51,7 @@ public class OptifineSetup {
 		}
 
 		File remappedJar = new File(versionDir, "Optifine-mapped.jar");
-		File optifinePatches = new File(versionDir, "Optifine.classes");
+		File optifinePatches = new File(versionDir, "Optifine.classes.gz");
 
 		ClassCache classCache = null;
 		if(remappedJar.exists() && optifinePatches.exists()){

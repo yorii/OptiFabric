@@ -20,13 +20,15 @@ public class PatchSplitter {
 		}
 		ClassCache classCache = new ClassCache(inputHash);
 		ZipUtils.transformInPlace(inputFile, (jarFile, entry) -> {
-			if ((entry.getName().startsWith("net/minecraft/") || entry.getName().startsWith("com/mojang/")) && entry.getName().endsWith(".class")) {
+			String name = entry.getName();
+
+			if ((name.startsWith("net/minecraft/") || name.startsWith("com/mojang/")) && name.endsWith(".class")) {
 				try(InputStream inputStream = jarFile.getInputStream(entry)){
-					String name = entry.getName();
 					byte[] bytes = IOUtils.toByteArray(inputStream);
+
 					classCache.addClass(name, bytes);
 					if(extractClasses){
-						File classFile = new File(classesDir, entry.getName());
+						File classFile = new File(classesDir, name);
 						FileUtils.writeByteArrayToFile(classFile, bytes);
 					}
 				}

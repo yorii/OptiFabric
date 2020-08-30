@@ -1,118 +1,117 @@
 package me.modmuss50.optifabric.patcher;
 
-import org.apache.commons.lang3.Validate;
-
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class ClassCache {
+import org.apache.commons.lang3.Validate;
 
-	private byte[] hash;
-	private Map<String, byte[]> classes = new HashMap<>();
+public class ClassCache {
+	private final byte[] hash;
+	private final Map<String, byte[]> classes = new HashMap<>();
 
 	public ClassCache(byte[] hash) {
 		this.hash = hash;
 	}
 
-	private ClassCache() {
-	}
-
-	public void addClass(String name, byte[] bytes){
-		if(classes.containsKey(name)){
-			throw new UnsupportedOperationException(name + " is already in ClassCache");
+	public void addClass(String name, byte[] bytes) {
+		if (classes.containsKey(name)) {
+			throw new IllegalArgumentException(name + " is already in ClassCache");
 		}
-		Validate.notNull(bytes, "bytes cannot be null");
-		classes.put(name, bytes);
+
+		classes.put(name, Validate.notNull(bytes, "Passed null bytes for %s", name));
 	}
 
-	public byte[] getClass(String name){
+	public Set<String> getClasses() {
+		return classes.keySet();
+	}
+
+	public byte[] getClass(String name) {
 		return classes.get(name);
 	}
 
-	public byte[] getAndRemove(String name){
-		byte[] bytes = getClass(name);
-		classes.remove(name);
-		return bytes;
+	public byte[] popClass(String name) {
+		return classes.remove(name);
 	}
 
 	public byte[] getHash() {
 		return hash;
 	}
 
-	public Set<String> getClasses(){
-		return classes.keySet();
+	private long calculateCRC() {
+		CRC32 crc = new CRC32();
+
+		crc.update(hash);
+		for (byte[] clazz : classes.values()) crc.update(clazz);
+
+		return crc.getValue();
 	}
 
 	public static ClassCache read(File input) throws IOException {
-		FileInputStream fis = new FileInputStream(input);
-		GZIPInputStream gis = new GZIPInputStream(fis);
-		DataInputStream dis = new DataInputStream(gis);
+		try (DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(input)))) {
+			char formatRevision = dis.readChar(); //Check the format of the file
+			if (formatRevision != 'A') return new ClassCache(null);
 
-		ClassCache classCache = new ClassCache();
+			long expectedCRC = dis.readLong();
 
-		//Read the hash
-		int hashSize = dis.readInt();
-		byte[] hash = new byte[hashSize];
-		dis.readFully(hash);
-		classCache.hash = hash;
+			//Read the hash
+			byte[] hash = new byte[dis.readInt()];
+			dis.readFully(hash);
+			ClassCache classCache = new ClassCache(hash);
 
-		int count = dis.readInt();
-		for (int i = 0; i < count; i++) {
-			int nameByteCount = dis.readInt();
-			byte[] nameBytes = new byte[nameByteCount];
-			dis.readFully(nameBytes);
-			String name = new String(nameBytes, StandardCharsets.UTF_8);
+			for (int i = 0, count = dis.readInt(); i < count; i++) {
+				byte[] nameBytes = new byte[dis.readInt()];
+				dis.readFully(nameBytes);
+				String name = new String(nameBytes, StandardCharsets.UTF_8);
 
-			int byteCount = dis.readInt();
-			byte[] bytes = new byte[byteCount];
-			dis.readFully(bytes);
-			classCache.classes.put(name, bytes);
+				byte[] bytes = new byte[dis.readInt()];
+				dis.readFully(bytes);
+				classCache.classes.put(name, bytes);
+			}
+
+			return classCache.calculateCRC() == expectedCRC ? classCache : new ClassCache(null);
 		}
-
-		dis.close();
-		gis.close();
-		fis.close();
-		return classCache;
 	}
 
 	public void save(File output) throws IOException {
-		if(output.exists()){
+		if (output.exists()) {
 			output.delete();
 		}
-		FileOutputStream fos = new FileOutputStream(output);
-		GZIPOutputStream gos = new GZIPOutputStream(fos);
-		DataOutputStream dos = new DataOutputStream(gos);
 
-		//Write the hash
-		dos.writeInt(hash.length);
-		dos.write(hash);
+		try (DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(output)))) {
+			dos.writeChar('A'); //Format version
+			dos.writeLong(calculateCRC()); //Expected CRC to get from fully reading
 
-		//Write the number of classes
-		dos.writeInt(classes.size());
-		for(Map.Entry<String, byte[]> clazz : classes.entrySet()){
-			String name = clazz.getKey();
-			byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
-			byte[] bytes = clazz.getValue();
+			//Write the hash
+			dos.writeInt(hash.length);
+			dos.write(hash);
 
-			//Write the name
-			dos.writeInt(nameBytes.length);
-			dos.write(nameBytes);
+			//Write the number of classes
+			dos.writeInt(classes.size());
+			for (Entry<String, byte[]> clazz : classes.entrySet()) {
+				String name = clazz.getKey();
+				byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
+				byte[] bytes = clazz.getValue();
 
-			//Write the actual bytes
-			dos.writeInt(bytes.length);
-			dos.write(bytes);
+				//Write the name
+				dos.writeInt(nameBytes.length);
+				dos.write(nameBytes);
+
+				//Write the actual bytes
+				dos.writeInt(bytes.length);
+				dos.write(bytes);
+			}
 		}
-		dos.flush();
-		dos.close();
-		gos.flush();
-		gos.close();
-		fos.flush();
-		fos.close();
 	}
-
 }
