@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -61,7 +63,8 @@ public class ClassCache {
 	public static ClassCache read(File input) throws IOException {
 		try (DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(input)))) {
 			char formatRevision = dis.readChar(); //Check the format of the file
-			if (formatRevision != 'A') return new ClassCache(null);
+			boolean isFormatA = formatRevision == 'A';
+			if (!isFormatA && formatRevision != 'B') return new ClassCache(null);
 
 			long expectedCRC = dis.readLong();
 
@@ -80,7 +83,20 @@ public class ClassCache {
 				classCache.classes.put(name, bytes);
 			}
 
-			return classCache.calculateCRC() == expectedCRC ? classCache : new ClassCache(null);
+			//Ensure the read contents matches up with what was expected
+			if (classCache.calculateCRC() != expectedCRC) return new ClassCache(null);
+
+			if (isFormatA) {
+				List<Entry<String, byte[]>> classes = new ArrayList<>(classCache.classes.entrySet());
+
+				classCache.classes.clear();
+				for (Entry<String, byte[]> entry : classes) {
+					String name = entry.getKey();
+					classCache.classes.put(name.substring(0, name.length() - 6), entry.getValue());
+				}
+			}
+
+			return classCache;
 		}
 	}
 
@@ -90,7 +106,7 @@ public class ClassCache {
 		}
 
 		try (DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(output)))) {
-			dos.writeChar('A'); //Format version
+			dos.writeChar('B'); //Format version
 			dos.writeLong(calculateCRC()); //Expected CRC to get from fully reading
 
 			//Write the hash

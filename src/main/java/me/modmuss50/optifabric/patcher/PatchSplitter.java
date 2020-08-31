@@ -26,7 +26,7 @@ public class PatchSplitter {
 				try(InputStream inputStream = jarFile.getInputStream(entry)){
 					byte[] bytes = IOUtils.toByteArray(inputStream);
 
-					classCache.addClass(name, bytes);
+					classCache.addClass(name.substring(0, name.length() - 6), bytes);
 					if(extractClasses){
 						File classFile = new File(classesDir, name);
 						FileUtils.writeByteArrayToFile(classFile, bytes);
