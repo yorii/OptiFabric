@@ -1,23 +1,29 @@
 package me.modmuss50.optifabric.mod;
 
-import com.chocohead.mm.api.ClassTinkerers;
-import me.modmuss50.optifabric.patcher.ClassCache;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.util.version.SemanticVersionImpl;
-import net.fabricmc.loader.util.version.SemanticVersionPredicateParser;
-import net.fabricmc.loader.util.version.VersionParsingException;
-import org.apache.commons.lang3.tuple.Pair;
-import org.spongepowered.asm.mixin.Mixins;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-@SuppressWarnings("unused")
+import org.apache.commons.lang3.tuple.Pair;
+
+import org.objectweb.asm.tree.MethodNode;
+
+import org.spongepowered.asm.mixin.Mixins;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.loader.util.version.SemanticVersionImpl;
+import net.fabricmc.loader.util.version.SemanticVersionPredicateParser;
+import net.fabricmc.loader.util.version.VersionParsingException;
+
+import com.chocohead.mm.api.ClassTinkerers;
+
+import me.modmuss50.optifabric.patcher.ClassCache;
+import me.modmuss50.optifabric.util.RemappingUtils;
+
 public class OptifabricSetup implements Runnable {
 
 	public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
@@ -29,17 +35,16 @@ public class OptifabricSetup implements Runnable {
 		if(!validateLoaderVersion()) return;
 		if(!validateMods()) return;
 
+		OptifineInjector injector;
 		try {
-			OptifineSetup optifineSetup = new OptifineSetup();
 			Pair<File, ClassCache> runtime = OptifineSetup.getRuntime();
+			optifineRuntimeJar = runtime.getLeft();
 
 			//Add the optifine jar to the classpath, as
 			ClassTinkerers.addURL(runtime.getLeft().toURI().toURL());
 
-			OptifineInjector injector = new OptifineInjector(runtime.getRight());
+			injector = new OptifineInjector(runtime.getRight());
 			injector.setup();
-
-			optifineRuntimeJar = runtime.getLeft();
 		} catch (Throwable e) {
 			if(!OptifabricError.hasError()){
 				OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBE;
@@ -77,6 +82,19 @@ public class OptifabricSetup implements Runnable {
 
 		if (isPresent("now-playing", ">=1.1.0")) {
 			Mixins.addConfiguration("optifabric.compat.now-playing.mixins.json");
+		}
+
+		if (isPresent("origins", ">=1.16-0.2.0")) {//ElytraFeatureRenderer
+			injector.predictFuture(RemappingUtils.getClassName("class_979")).ifPresent(node -> {//ItemStack, LivingEntity
+				String desc = RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Z");
+
+				for (MethodNode method : node.methods) {
+					if ("shouldRender".equals(method.name) && desc.equals(method.desc)) {
+						Mixins.addConfiguration("optifabric.compat.origins.mixins.json");
+						break;
+					}
+				}
+			});
 		}
 	}
 
