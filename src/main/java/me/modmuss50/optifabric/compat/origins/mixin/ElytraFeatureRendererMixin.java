@@ -23,7 +23,7 @@ abstract class ElytraFeatureRendererMixin {
     private native Item modifyEquippedStackToElytra(ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light, LivingEntity entity,
     		float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch);
 
-	@Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "shouldRender", at = @At("HEAD"), remap = false, cancellable = true)
 	public void shouldRender(ItemStack stack, LivingEntity entity, CallbackInfoReturnable<Boolean> call) {
 		if (modifyEquippedStackToElytra(stack, null, null, 0, entity, 0, 0, 0, 0, 0, 0) == Items.ELYTRA) {
 			call.setReturnValue(true); //Let's take the positive approach that those parameters are never needed

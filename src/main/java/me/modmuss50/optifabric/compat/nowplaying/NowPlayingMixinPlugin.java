@@ -39,6 +39,7 @@ public class NowPlayingMixinPlugin extends InterceptingMixinPlugin {
 				}
 			}
 		}
+
 		super.preApply(targetClassName, targetClass, mixinClassName, mixinInfo);
 	}
 }
