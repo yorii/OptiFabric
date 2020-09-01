@@ -50,7 +50,6 @@ public class FluidRendererFix implements ClassFixer {
 				if (setTint == null) throw new IllegalStateException("Unable to find injection point in " + optifine.name + '#' + method.name + method.desc);
 
 				LabelNode needsOptiFine = new LabelNode();
-				//LabelNode noNeedPop = new LabelNode();
 				LabelNode noNeed = setTint.label;
 
 				InsnList extra = new InsnList();
@@ -62,33 +61,11 @@ public class FluidRendererFix implements ClassFixer {
 				setTint.setOpcode(Opcodes.IFLT);
 
 				extra.add(new VarInsnNode(Opcodes.ALOAD, 4));
-				/*Member getFluid = RemappingUtils.mapMethod("class_3610", "method_15772", "()Lnet/minecraft/class_3611;");
-				extra.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getFluid.owner, getFluid.name, getFluid.desc));
-				extra.add(new InsnNode(Opcodes.DUP));
-				Member water = RemappingUtils.mapMethod("class_3612", "field_15910", "Lnet/minecraft/class_3609;");
-				extra.add(new FieldInsnNode(Opcodes.GETSTATIC, water.owner, water.name, water.desc));
-				extra.add(new JumpInsnNode(Opcodes.IF_ACMPNE, noNeedPop));
-				extra.add(new MethodInsnNode(Opcodes.GETSTATIC, "net/fabricmc/fabric/api/client/render/fluid/v1/FluidRenderHandlerRegistry", "INSTANCE",
-						"Lnet/fabricmc/fabric/api/client/render/fluid/v1/FluidRenderHandlerRegistry;"));
-				extra.add(new InsnNode(Opcodes.SWAP));
-				extra.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/fabricmc/fabric/api/client/render/fluid/v1/FluidRenderHandlerRegistry", "get",
-						'(' + water.desc + ")Lnet/fabricmc/fabric/api/client/render/fluid/v1/FluidRenderHandler;", true));
-				extra.add(new LdcInsnNode("Can't find render handler for water?"));
-				extra.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/util/Objects", "requireNonNull", "(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;", false));
-				extra.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/fabricmc/fabric/api/client/render/fluid/v1/FluidRenderHandler")); //We'll be good
-				extra.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;", false));
-				extra.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/Class", "getName", "()Ljava/lang/String;", false));
-				extra.add(new LdcInsnNode("net.fabricmc.fabric."));
-				extra.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "startsWith", "(Ljava/lang/String;)Z", false));*/
 				extra.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "me/modmuss50/optifabric/compat/fabricrenderingfluids/FluidRendererFixExternal", 
 						"needsOptiFine", RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_3610;)Z"))); //FluidState
 				extra.add(new JumpInsnNode(Opcodes.IFEQ, noNeed));
 				extra.add(needsOptiFine);
-				method.instructions.insert(setTint, extra);/*
-
-				extra.add(noNeedPop);
-				extra.add(new InsnNode(Opcodes.POP));
-				method.instructions.insertBefore(noNeed, extra);*/
+				method.instructions.insert(setTint, extra);
 				break;
 			}
 		}
