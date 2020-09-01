@@ -1,12 +1,8 @@
 {
-	"required": true,
+	"parent": "optifabric.mixins.json",
 	"package": "me.modmuss50.optifabric.compat.nowplaying.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"plugin": "me.modmuss50.optifabric.compat.nowplaying.NowPlayingMixinPlugin",
 	"mixins": [
 		"WorldRendererMixin"
-	],
-	"plugin": "me.modmuss50.optifabric.compat.nowplaying.NowPlayingMixinPlugin",
-	"injectors": {
-		"defaultRequire": 1
-	}
+	]
 }

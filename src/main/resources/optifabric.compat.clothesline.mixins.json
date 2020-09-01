@@ -1,13 +1,9 @@
 {
-	"required": true,
+	"parent": "optifabric.mixins.json",
 	"package": "me.modmuss50.optifabric.compat.clothesline.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
 	"mixins": [
 		"WorldRendererMixin",
 		"BufferBuilderStorageFix"
-	],
-	"plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
-	"injectors": {
-		"defaultRequire": 1
-	}
+	]
 }

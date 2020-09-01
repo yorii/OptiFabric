@@ -1,13 +1,9 @@
 {
-  "required": true,
-  "package": "me.modmuss50.optifabric.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "MixinReflectorClass",
-    "MixinOptifineConfig",
-    "MixinDefaultResourcePack"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+	"parent": "optifabric.mixins.json",
+	"package": "me.modmuss50.optifabric.mixin",
+	"mixins": [
+		"MixinReflectorClass",
+		"MixinOptifineConfig",
+		"MixinDefaultResourcePack"
+	]
 }

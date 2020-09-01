@@ -1,12 +1,8 @@
 {
-	"required": true,
+	"parent": "optifabric.mixins.json",
 	"package": "me.modmuss50.optifabric.compat.origins.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"plugin": "me.modmuss50.optifabric.compat.origins.OriginsMixinPlugin",
 	"mixins": [
 		"ElytraFeatureRendererMixin"
-	],
-	"plugin": "me.modmuss50.optifabric.compat.origins.OriginsMixinPlugin",
-	"injectors": {
-		"defaultRequire": 1
-	}
+	]
 }

@@ -1,12 +1,8 @@
 {
-  "required": true,
-  "package": "me.modmuss50.optifabric.compat.cloth.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  	"DummyMixinGameRenderer"
-  ],
-  "plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
-  "injectors": {
-    "defaultRequire": 1
-  }
+	"parent": "optifabric.mixins.json",
+	"package": "me.modmuss50.optifabric.compat.cloth.mixin",
+	"plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
+	"mixins": [
+		"DummyMixinGameRenderer"
+	]
 }

@@ -1,12 +1,8 @@
 {
-	"required": true,
+	"parent": "optifabric.mixins.json",
 	"package": "me.modmuss50.optifabric.compat.multiconnect.mixin",
-	"compatibilityLevel": "JAVA_8",
+	"plugin": "me.modmuss50.optifabric.compat.multiconnect.MulticonnectMixinPlugin",
 	"mixins": [
 		"ModelLoaderMixin"
-	],
-	"plugin": "me.modmuss50.optifabric.compat.multiconnect.MulticonnectMixinPlugin",
-	"injectors": {
-		"defaultRequire": 1
-	}
+	]
 }

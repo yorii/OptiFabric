@@ -1,11 +1,8 @@
 package me.modmuss50.optifabric.compat;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -14,7 +11,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.injection.Surrogate;
 import org.spongepowered.asm.mixin.transformer.ClassInfo.Method;
@@ -26,17 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import me.modmuss50.optifabric.util.MixinFinder;
 import me.modmuss50.optifabric.util.MixinFinder.Mixin;
 
-public class InterceptingMixinPlugin implements IMixinConfigPlugin {
-
-	@Override
-	public void onLoad(String mixinPackage) {
-	}
-
-	@Override
-	public String getRefMapperConfig() {
-		return null;
-	}
-
+public class InterceptingMixinPlugin extends EmptyMixinPlugin {
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		try {
@@ -47,15 +33,6 @@ public class InterceptingMixinPlugin implements IMixinConfigPlugin {
 			e.printStackTrace();
 			return true; //Possibly should be returning false if it can't be found?
 		}
-	}
-
-	@Override
-	public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
-	}
-
-	@Override
-	public List<String> getMixins() {
-		return Collections.emptyList();
 	}
 
 	@Override
