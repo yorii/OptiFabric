@@ -80,6 +80,7 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntime 'curse.maven:staff-of-building:3033652'
 }
 
 task unzip(type: Copy) {
