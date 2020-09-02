@@ -100,6 +100,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("staffofbuilding")) {
 			Mixins.addConfiguration("optifabric.compat.staffofbuilding.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("sandwichable")) {
+			Mixins.addConfiguration("optifabric.compat.sandwichable.mixins.json");
+		}
 	}
 
 	//I check the version like this as I want to show issues on our error screen

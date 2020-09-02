@@ -81,6 +81,11 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modRuntime 'curse.maven:staff-of-building:3033652'
+	modRuntime ('me.shedaniel.cloth.api:cloth-dynamic-registry-api-v1:1.2.1') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntime 'curse.maven:sandwichable:3039866'
 }
 
 task unzip(type: Copy) {
