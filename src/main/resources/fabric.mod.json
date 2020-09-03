@@ -4,16 +4,17 @@
   "version": "${version}",
 
   "name": "OptiFabric",
-  "description": "OptiFabric is a mod that loads OptiFine into fabric",
+  "description": "OptiFabric is a mod that loads OptiFine into Fabric",
   "authors": [
     "Modmuss50",
     "Chocohead"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/optifabric",
+    "sources": "https://github.com/Chocohead/OptiFabric",
+    "issues": "https://github.com/Chocohead/OptiFabric/issues"
   },
-  "mixins" :[
+  "mixins": [
     "optifabric.mixins.json"
   ],
   "license": "MPL-2.0",
@@ -23,8 +24,8 @@
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
     ],
-    "main": [
-      "me.modmuss50.optifabric.mod.Optifabric"
+    "preLaunch": [
+      "me.modmuss50.optifabric.mod.OptifabricLoadGuard"
     ]
   },
   "custom": {
@@ -34,5 +35,11 @@
     "fabricloader": ">=0.8.8",
     "minecraft": ["1.16.1", "1.16.2"],
     "mm": ">=2.0"
+  },
+  "conflicts": {
+    "sodium": "*"
+  },
+  "breaks": {
+    "no_fog": "*"
   }
 }
