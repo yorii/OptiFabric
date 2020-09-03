@@ -104,6 +104,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("sandwichable")) {
 			Mixins.addConfiguration("optifabric.compat.sandwichable.mixins.json");
 		}
+
+		if (isPresent("astromine", "<1.6")) {//Only needed for the 1.16.1 versions
+			Mixins.addConfiguration("optifabric.compat.astromine.mixins.json");
+		}
 	}
 
 	//I check the version like this as I want to show issues on our error screen
