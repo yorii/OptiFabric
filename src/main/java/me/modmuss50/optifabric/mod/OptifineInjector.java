@@ -97,6 +97,8 @@ public class OptifineInjector {
 	}
 
 	private static int widerAccess(int origin, int target) {
+		if (!Modifier.isFinal(origin)) target &= ~Modifier.FINAL;
+
 		switch (target & 0x7) {
 		case Modifier.PUBLIC:
 			return target;
