@@ -35,6 +35,8 @@ repositories {
 	}
 	maven { url 'https://maven.blamejared.com' }
 	maven { url 'https://dl.bintray.com/earthcomputer/mods' }
+	maven { url 'https://modmaven.k-4u.nl/artifactory/local-releases/' }
+	maven { url 'https://mod-buildcraft.com/maven' }
 	maven { url 'https://www.cursemaven.com' }
 	maven { url 'https://jitpack.io' }
 }
@@ -86,6 +88,10 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modRuntime 'curse.maven:sandwichable:3039866'
+	modRuntime ('appeng:appliedenergistics2-fabric:8.1.0-alpha.6') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 task unzip(type: Copy) {

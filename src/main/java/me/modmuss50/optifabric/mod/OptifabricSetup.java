@@ -53,9 +53,8 @@ public class OptifabricSetup implements Runnable {
 			throw new RuntimeException("Failed to setup optifine", e);
 		}
 
-		if(FabricLoader.getInstance().isModLoaded("fabric-renderer-indigo")){
-			validateIndigoVersion();
-			Mixins.addConfiguration("optifabric.indigofix.mixins.json");
+		if (FabricLoader.getInstance().isModLoaded("fabric-renderer-indigo")) {
+			Mixins.addConfiguration("optifabric.compat.indigo.mixins.json");
 		}
 
 		if (isPresent("fabric-item-api-v1", ">=1.1.0")) {
@@ -107,25 +106,6 @@ public class OptifabricSetup implements Runnable {
 
 		if (isPresent("astromine", "<1.6")) {//Only needed for the 1.16.1 versions
 			Mixins.addConfiguration("optifabric.compat.astromine.mixins.json");
-		}
-	}
-
-	//I check the version like this as I want to show issues on our error screen
-	private void validateIndigoVersion() {
-		try {
-			if (!isVersionValid("fabric-renderer-indigo", ">=0.1.8")) {
-				if(!OptifabricError.hasError()){
-					OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBE;
-					OptifabricError.setError("You are using an outdated version of Fabric (API), please update!\n\nDownload the jar from the link bellow and replace the existing Fabric (API) jar in your mods folder.", "https://www.curseforge.com/minecraft/mc-mods/fabric-api/files");
-					OptifabricError.setHelpButtonText("Download Fabric (API)");
-				}
-			}
-		} catch (Throwable e){
-			if(!OptifabricError.hasError()){
-				OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBE;
-				OptifabricError.setError("Failed to load optifine, check the log for more info \n\n " + e.getMessage());
-			}
-			throw new RuntimeException("Failed to setup optifine", e);
 		}
 	}
 

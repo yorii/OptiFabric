@@ -11,7 +11,6 @@ import java.util.Set;
 import net.fabricmc.loader.api.FabricLoader;
 
 import me.modmuss50.optifabric.compat.fabricrenderingfluids.FluidRendererFix;
-import me.modmuss50.optifabric.compat.patchouli.ModelOverrideListFix;
 import me.modmuss50.optifabric.util.RemappingUtils;
 
 public class OptifineFixer {
@@ -40,14 +39,12 @@ public class OptifineFixer {
 		//net/minecraft/client/particle/ParticleManager
 		skipClass("class_702"); //Skip a seemingly pointless patch to register particles by register name rather than ID
 
+		//net/minecraft/client/render/model/json/ModelOverrideList
+		registerFix("class_806", new ModelOverrideListFix());
+
 		if (FabricLoader.getInstance().isModLoaded("fabric-rendering-fluids-v1")) {
 			//net/minecraft/client/render/block/FluidRenderer
 			registerFix("class_775", new FluidRendererFix());
-		}
-
-		if (FabricLoader.getInstance().isModLoaded("patchouli")) {
-			//net/minecraft/client/render/model/json/ModelOverrideList
-			registerFix("class_806", new ModelOverrideListFix());
 		}
 	}
 

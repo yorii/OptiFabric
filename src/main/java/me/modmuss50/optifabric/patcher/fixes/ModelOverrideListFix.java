@@ -1,4 +1,4 @@
-package me.modmuss50.optifabric.compat.patchouli;
+package me.modmuss50.optifabric.patcher.fixes;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -14,7 +14,7 @@ import me.modmuss50.optifabric.patcher.fixes.ClassFixer;
 import me.modmuss50.optifabric.util.RemappingUtils;
 
 public class ModelOverrideListFix implements ClassFixer {
-	//Work around OptiFine making a lambda from an argument Patchouli passes in as null 
+	//Work around OptiFine making a lambda from an argument several mods (such as Patchouli and AE2) pass in as null 
 
 	@Override
 	public void fix(ClassNode optifine, ClassNode minecraft) {
