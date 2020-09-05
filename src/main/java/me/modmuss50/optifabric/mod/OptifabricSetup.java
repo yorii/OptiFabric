@@ -107,6 +107,10 @@ public class OptifabricSetup implements Runnable {
 		if (isPresent("astromine", "<1.6")) {//Only needed for the 1.16.1 versions
 			Mixins.addConfiguration("optifabric.compat.astromine.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("carpet")) {
+			Mixins.addConfiguration("optifabric.compat.carpet.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
