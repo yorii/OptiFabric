@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -21,6 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import me.modmuss50.optifabric.util.MixinFinder;
 import me.modmuss50.optifabric.util.MixinFinder.Mixin;
+import me.modmuss50.optifabric.util.RemappingUtils;
 
 public class InterceptingMixinPlugin extends EmptyMixinPlugin {
 	@Override
@@ -52,6 +54,28 @@ public class InterceptingMixinPlugin extends EmptyMixinPlugin {
 						method.name = realMethod.getName(); //Mangle name to whatever Mixin is using for the real injection
 						method.invisibleAnnotations.remove(surrogateNode);
 						Annotations.setVisible(method, Surrogate.class);
+
+						if (method.invisibleParameterAnnotations != null) {
+							Type[] arguments = Type.getArgumentTypes(method.desc);
+							boolean madeChange = false;
+
+							for (int i = 0, end = arguments.length; i < end; i++) {
+								AnnotationNode coercionNode = Annotations.getInvisibleParameter(method, LoudCoerce.class, i);
+
+								if (coercionNode != null) {
+									String type = Annotations.getValue(coercionNode);
+
+									if (Annotations.<Boolean>getValue(coercionNode, "remap") != Boolean.FALSE) {
+										type = RemappingUtils.getClassName(type);
+									}
+
+									arguments[i] = Type.getObjectType(type);
+									madeChange = true;
+								}
+							}
+
+							if (madeChange) method.desc = Type.getMethodDescriptor(Type.getReturnType(method.desc), arguments);
+						}
 
 						targetClass.methods.add(method);
 						continue on;
