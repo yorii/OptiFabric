@@ -40,6 +40,8 @@
     "sodium": "*"
   },
   "breaks": {
-    "no_fog": "*"
+    "no_fog": "*",
+    "thallium": "*",
+    "xradiation": "*"
   }
 }

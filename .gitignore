@@ -6,6 +6,10 @@ out/
 classes/
 libs/
 
+# Eclipse
+
+*.launch
+
 # idea
 
 .idea/
@@ -26,3 +30,4 @@ bin/
 run/
 files/
 temp/
+logs/
