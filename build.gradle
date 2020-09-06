@@ -37,6 +37,7 @@ repositories {
 	maven { url 'https://dl.bintray.com/earthcomputer/mods' }
 	maven { url 'https://modmaven.k-4u.nl/artifactory/local-releases/' }
 	maven { url 'https://mod-buildcraft.com/maven' }
+	maven { url 'https://maven.dblsaiko.net' }
 	maven { url 'https://www.cursemaven.com' }
 	maven { url 'https://jitpack.io' }
 }
@@ -89,6 +90,13 @@ dependencies {
 	}
 	modRuntime 'curse.maven:sandwichable:3039866'
 	modRuntime ('appeng:appliedenergistics2-fabric:8.1.0-alpha.6') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntime ('net.fabricmc:fabric-language-kotlin:1.3.71+build.1') {
+		exclude(group: "net.fabricmc")
+	}
+	modRuntime ('net.dblsaiko:hctm-base:3.3.0') {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}

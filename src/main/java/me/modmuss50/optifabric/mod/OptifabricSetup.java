@@ -111,6 +111,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("carpet")) {
 			Mixins.addConfiguration("optifabric.compat.carpet.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("hctm-base")) {
+			Mixins.addConfiguration("optifabric.compat.hctm.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
