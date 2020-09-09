@@ -100,6 +100,14 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntime ('com.github.DawnTeamMC:DawnAPI:1.0.2') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntime ('com.github.DawnTeamMC:Mubble:4.0-pre3') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 task unzip(type: Copy) {

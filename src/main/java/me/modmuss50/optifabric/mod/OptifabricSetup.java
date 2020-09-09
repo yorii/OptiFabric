@@ -115,6 +115,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("hctm-base")) {
 			Mixins.addConfiguration("optifabric.compat.hctm.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("mubble")) {
+			Mixins.addConfiguration("optifabric.compat.mubble.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
