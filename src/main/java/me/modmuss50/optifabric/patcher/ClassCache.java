@@ -19,6 +19,18 @@ import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.lang3.Validate;
 
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Opcodes;
+
+import com.google.common.collect.MoreCollectors;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.launch.common.FabricLauncherBase;
+import net.fabricmc.mapping.tree.FieldDef;
+
 public class ClassCache {
 	private final byte[] hash;
 	private final Map<String, byte[]> classes = new HashMap<>();
@@ -64,7 +76,8 @@ public class ClassCache {
 		try (DataInputStream dis = new DataInputStream(new GZIPInputStream(new FileInputStream(input)))) {
 			char formatRevision = dis.readChar(); //Check the format of the file
 			boolean isFormatA = formatRevision == 'A';
-			if (!isFormatA && formatRevision != 'B') return new ClassCache(null);
+			boolean isFormatB = formatRevision == 'B';
+			if (!isFormatA && !isFormatB && formatRevision != 'C') return new ClassCache(null);
 
 			long expectedCRC = dis.readLong();
 
@@ -96,6 +109,33 @@ public class ClassCache {
 				}
 			}
 
+			if (isFormatB) {
+				byte[] particleManager = classCache.popClass("net/minecraft/class_702");
+
+				if (particleManager != null) {
+					FieldDef factories = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings()
+							.getClasses().stream().filter(clazz -> "net/minecraft/class_702".equals(clazz.getName("intermediary")))
+							.flatMap(clazz -> clazz.getFields().stream()).filter(field -> "field_3835".equals(field.getName("intermediary")))
+							.collect(MoreCollectors.onlyElement());
+					String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
+
+					ClassReader reader = new ClassReader(particleManager);
+					ClassWriter writer = new ClassWriter(reader, 0);
+
+					reader.accept(new ClassVisitor(Opcodes.ASM8, writer) {
+						private final String fieldName = factories.getName(namespace);
+						private final String fieldDesc = factories.getDescriptor(namespace); //Namespace shouldn't strictly matter here
+
+						@Override
+						public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+							return super.visitField(access, name, fieldName.equals(name) ? fieldDesc : descriptor, signature, value);
+						}
+					}, 0);
+
+					classCache.addClass("net/minecraft/class_702", writer.toByteArray());
+				}
+			}
+
 			return classCache;
 		}
 	}
@@ -106,7 +146,7 @@ public class ClassCache {
 		}
 
 		try (DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(output)))) {
-			dos.writeChar('B'); //Format version
+			dos.writeChar('C'); //Format version
 			dos.writeLong(calculateCRC()); //Expected CRC to get from fully reading
 
 			//Write the hash
