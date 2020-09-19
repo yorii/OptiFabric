@@ -112,6 +112,14 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntime ('com.github.user11681:smartentrypoints:2ae077c') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntime ('com.github.user11681:phormat:77f017e') {
+		exclude(group: "net.fabricmc")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 compileJava {

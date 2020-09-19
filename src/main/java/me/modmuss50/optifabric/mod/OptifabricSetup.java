@@ -119,6 +119,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("mubble")) {
 			Mixins.addConfiguration("optifabric.compat.mubble.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("phormat")) {
+			Mixins.addConfiguration("optifabric.compat.phormat.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
