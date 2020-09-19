@@ -5,9 +5,13 @@ buildscript {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		maven { 
+			name = "Jitpack"
+			url 'https://jitpack.io/'
+		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.4-SNAPSHOT"
+		classpath 'com.github.Chocohead.Fabric-Loom:fabric-loom:01584ef'
 	}
 }
 
@@ -107,6 +111,14 @@ dependencies {
 	modRuntime ('com.github.DawnTeamMC:Mubble:95efa5b') {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
+	}
+}
+
+compileJava {
+	mappings {
+		from = "named"
+		to = "intermediary"
+		method "net/optifine/reflect/ReflectorForge", "(Lnet/minecraft/item/ItemStack;)Z", "isItemDamaged", "isItemDamaged"
 	}
 }
 
