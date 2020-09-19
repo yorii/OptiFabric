@@ -42,6 +42,7 @@
   "breaks": {
     "no_fog": "*",
     "thallium": "*",
-    "xradiation": "*"
+    "xradiation": "*",
+    "cardinal-components-item": "<2.4.2"
   }
 }
