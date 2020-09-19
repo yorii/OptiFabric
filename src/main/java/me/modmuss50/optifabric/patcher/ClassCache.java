@@ -31,6 +31,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import net.fabricmc.mapping.tree.FieldDef;
 
+import me.modmuss50.optifabric.util.RemappingUtils;
+
 public class ClassCache {
 	private final byte[] hash;
 	private final Map<String, byte[]> classes = new HashMap<>();
@@ -109,30 +111,31 @@ public class ClassCache {
 				}
 			}
 
-			if (isFormatB) {
-				byte[] particleManager = classCache.popClass("net/minecraft/class_702");
+			if (isFormatA || isFormatB) {
+				String particleManager = RemappingUtils.getClassName("class_702");
+				byte[] particleManagerContents = classCache.popClass(particleManager);
 
-				if (particleManager != null) {
+				if (particleManagerContents != null) {
 					FieldDef factories = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings()
 							.getClasses().stream().filter(clazz -> "net/minecraft/class_702".equals(clazz.getName("intermediary")))
 							.flatMap(clazz -> clazz.getFields().stream()).filter(field -> "field_3835".equals(field.getName("intermediary")))
 							.collect(MoreCollectors.onlyElement());
 					String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
 
-					ClassReader reader = new ClassReader(particleManager);
+					ClassReader reader = new ClassReader(particleManagerContents);
 					ClassWriter writer = new ClassWriter(reader, 0);
 
 					reader.accept(new ClassVisitor(Opcodes.ASM8, writer) {
-						private final String fieldName = factories.getName(namespace);
-						private final String fieldDesc = factories.getDescriptor(namespace); //Namespace shouldn't strictly matter here
+						private final String oldName = factories.getName("official");
+						private final String newName = factories.getName(namespace);
 
 						@Override
 						public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-							return super.visitField(access, name, fieldName.equals(name) ? fieldDesc : descriptor, signature, value);
+							return super.visitField(access, oldName.equals(name) && "Ljava/util/Map;".equals(descriptor) ? newName : name, descriptor, signature, value);
 						}
 					}, 0);
 
-					classCache.addClass("net/minecraft/class_702", writer.toByteArray());
+					classCache.addClass(particleManager, writer.toByteArray());
 				}
 			}
 
