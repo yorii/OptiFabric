@@ -110,6 +110,19 @@ public class OptifabricSetup implements Runnable {
 
 		if (FabricLoader.getInstance().isModLoaded("carpet")) {
 			Mixins.addConfiguration("optifabric.compat.carpet.mixins.json");
+
+			injector.predictFuture(RemappingUtils.getClassName("class_702")).ifPresent(node -> {//ParticleManager
+				//(MatrixStack, VertexConsumerProvider$Immediate, LightmapTextureManager, Camera, Frustum)
+				String desc = RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_4587;Lnet/minecraft/class_4597$class_4598;"
+																+ "Lnet/minecraft/class_765;Lnet/minecraft/class_4184;FLnet/minecraft/class_4604;)V");
+
+				for (MethodNode method : node.methods) {
+					if ("renderParticles".equals(method.name) && desc.equals(method.desc)) {
+						Mixins.addConfiguration("optifabric.compat.carpet.extra-mixins.json");
+						break;
+					}
+				}
+			});
 		}
 
 		if (FabricLoader.getInstance().isModLoaded("hctm-base")) {
