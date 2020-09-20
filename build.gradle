@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'com.github.Chocohead.Fabric-Loom:fabric-loom:80718b0'
+		classpath 'com.github.Chocohead.Fabric-Loom:fabric-loom:c180d3f'
 	}
 }
 
@@ -120,6 +120,7 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	modRuntime 'curse.maven:chat-heads:3057632'
 }
 
 compileJava {

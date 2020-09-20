@@ -123,6 +123,10 @@ public class OptifabricSetup implements Runnable {
 		if (FabricLoader.getInstance().isModLoaded("phormat")) {
 			Mixins.addConfiguration("optifabric.compat.phormat.mixins.json");
 		}
+
+		if (FabricLoader.getInstance().isModLoaded("chat_heads")) {
+			Mixins.addConfiguration("optifabric.compat.chat-heads.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
