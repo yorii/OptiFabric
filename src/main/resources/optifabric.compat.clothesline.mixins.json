@@ -3,7 +3,6 @@
 	"package": "me.modmuss50.optifabric.compat.clothesline.mixin",
 	"plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
 	"mixins": [
-		"WorldRendererMixin",
-		"BufferBuilderStorageFix"
+		"WorldRendererMixin"
 	]
 }
