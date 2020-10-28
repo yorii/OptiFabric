@@ -148,7 +148,7 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.compat.phormat.mixins.json");
 		}
 
-		if (isPresent("chat_heads")) {
+		if (isPresent("chat_heads", "<0.2")) {
 			Mixins.addConfiguration("optifabric.compat.chat-heads.mixins.json");
 		}
 
