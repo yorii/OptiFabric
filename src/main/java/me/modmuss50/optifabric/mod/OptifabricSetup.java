@@ -134,8 +134,14 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.compat.hctm.mixins.json");
 		}
 
-		if (isPresent("mubble")) {
+		if (isPresent("mubble", "<1.3")) {
 			Mixins.addConfiguration("optifabric.compat.mubble.mixins.json");
+		}
+
+		if (isPresent("dawn", ">=1.3 <1.5")) {
+			Mixins.addConfiguration("optifabric.compat.dawn.old-mixins.json");
+		} else if (isPresent("dawn", ">=1.5")) {
+			Mixins.addConfiguration("optifabric.compat.dawn.mixins.json");
 		}
 
 		if (isPresent("phormat")) {

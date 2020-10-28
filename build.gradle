@@ -105,11 +105,11 @@ dependencies {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modRuntime ('com.github.DawnTeamMC:DawnAPI:1.1') {
+	modRuntime ('com.github.DawnTeamMC:DawnAPI:1.4.1') {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modRuntime ('com.github.DawnTeamMC:Mubble:95efa5b') {
+	modRuntime ('com.github.DawnTeamMC:Mubble:0ccbea2') {
 		exclude(group: "net.fabricmc")
 		exclude(group: "net.fabricmc.fabric-api")
 	}
