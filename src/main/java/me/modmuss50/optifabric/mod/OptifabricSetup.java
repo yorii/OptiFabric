@@ -85,12 +85,16 @@ public class OptifabricSetup implements Runnable {
 		}
 
 		if (isPresent("origins", mod -> compareVersions(Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) ? ">=1.16-0.2.0" : ">=0.4.1", mod))) {//ElytraFeatureRenderer
+			if (isPresent("origins", mod -> !Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) || compareVersions(">=1.16.2-0.3.7", mod))) {
+				Mixins.addConfiguration("optifabric.compat.origins.mixins.json");
+			}
+
 			injector.predictFuture(RemappingUtils.getClassName("class_979")).ifPresent(node -> {//ItemStack, LivingEntity
 				String desc = RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Z");
 
 				for (MethodNode method : node.methods) {
 					if ("shouldRender".equals(method.name) && desc.equals(method.desc)) {
-						Mixins.addConfiguration("optifabric.compat.origins.mixins.json");
+						Mixins.addConfiguration("optifabric.compat.origins.extra-mixins.json");
 						break;
 					}
 				}
