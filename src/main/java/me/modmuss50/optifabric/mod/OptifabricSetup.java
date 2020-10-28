@@ -151,6 +151,10 @@ public class OptifabricSetup implements Runnable {
 		if (isPresent("chat_heads")) {
 			Mixins.addConfiguration("optifabric.compat.chat-heads.mixins.json");
 		}
+
+		if (isPresent("mmorpg")) {
+			Mixins.addConfiguration("optifabric.compat.age-of-exile.mixins.json");
+		}
 	}
 
 	private boolean validateMods() {
