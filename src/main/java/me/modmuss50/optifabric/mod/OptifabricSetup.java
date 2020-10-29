@@ -1,8 +1,6 @@
 package me.modmuss50.optifabric.mod;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -27,15 +25,11 @@ import me.modmuss50.optifabric.util.RemappingUtils;
 import com.chocohead.mm.api.ClassTinkerers;
 
 public class OptifabricSetup implements Runnable {
-
-	public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
 	public static File optifineRuntimeJar = null;
 
 	//This is called early on to allow us to get the transformers in beofore minecraft starts
 	@Override
 	public void run() {
-		if (!validateMods()) return;
-
 		OptifineInjector injector;
 		try {
 			Pair<File, ClassCache> runtime = OptifineSetup.getRuntime();
@@ -155,28 +149,6 @@ public class OptifabricSetup implements Runnable {
 		if (isPresent("mmorpg")) {
 			Mixins.addConfiguration("optifabric.compat.age-of-exile.mixins.json");
 		}
-	}
-
-	private boolean validateMods() {
-		List<ModMetadata> incompatibleMods = new ArrayList<>();
-		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-			ModMetadata metadata = container.getMetadata();
-			if(metadata.containsCustomValue(OPTIFABRIC_INCOMPATIBLE)) {
-				incompatibleMods.add(metadata);
-			}
-		}
-		if (!incompatibleMods.isEmpty()) {
-			OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBE;
-			StringBuilder errorMessage = new StringBuilder("One or more mods have stated they are incompatible with OptiFabric\nPlease remove OptiFabric or the following mods:\n");
-			for (ModMetadata metadata : incompatibleMods) {
-				errorMessage.append(metadata.getName())
-						.append(" (")
-						.append(metadata.getId())
-						.append(")\n");
-			}
-			OptifabricError.setError(errorMessage.toString());
-		}
-		return incompatibleMods.isEmpty();
 	}
 
 	private static boolean isPresent(String modID) {
