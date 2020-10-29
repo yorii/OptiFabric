@@ -19,6 +19,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.util.version.SemanticVersionImpl;
 import net.fabricmc.loader.util.version.SemanticVersionPredicateParser;
 
+import me.modmuss50.optifabric.mod.OptifineVersion.JarType;
 import me.modmuss50.optifabric.patcher.ClassCache;
 import me.modmuss50.optifabric.util.RemappingUtils;
 
@@ -41,8 +42,8 @@ public class OptifabricSetup implements Runnable {
 			injector = new OptifineInjector(runtime.getRight());
 			injector.setup();
 		} catch (Throwable e) {
-			if(!OptifabricError.hasError()){
-				OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBE;
+			if (!OptifabricError.hasError()) {
+				OptifineVersion.jarType = JarType.INTERNAL_ERROR;
 				OptifabricError.setError("Failed to load optifine, check the log for more info \n\n " + e.getMessage());
 			}
 			throw new RuntimeException("Failed to setup optifine", e);
