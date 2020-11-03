@@ -43,6 +43,7 @@
     "no_fog": "*",
     "thallium": "*",
     "xradiation": "*",
-    "cardinal-components-item": "<2.4.2"
+    "cardinal-components-item": "<2.4.2",
+    "satin": "*"
   }
 }
