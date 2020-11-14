@@ -153,7 +153,9 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.compat.age-of-exile.mixins.json");
 		}
 
-		if (isPresent("charm", ">=2.0")) {
+		if (isPresent("charm", ">=2.0 <2.1")) {
+			Mixins.addConfiguration("optifabric.compat.charm-old.mixins.json");
+		} else if (isPresent("charm", ">=2.1")) {
 			Mixins.addConfiguration("optifabric.compat.charm.mixins.json");
 		}
 	}
