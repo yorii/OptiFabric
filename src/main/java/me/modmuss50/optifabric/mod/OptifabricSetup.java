@@ -158,6 +158,10 @@ public class OptifabricSetup implements Runnable {
 		} else if (isPresent("charm", ">=2.1")) {
 			Mixins.addConfiguration("optifabric.compat.charm.mixins.json");
 		}
+
+		if (isPresent("voxelmap")) {
+			Mixins.addConfiguration("optifabric.compat.voxelmap.mixins.json");
+		}
 	}
 
 	private static boolean isPresent(String modID) {
