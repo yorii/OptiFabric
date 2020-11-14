@@ -152,6 +152,10 @@ public class OptifabricSetup implements Runnable {
 		if (isPresent("mmorpg")) {
 			Mixins.addConfiguration("optifabric.compat.age-of-exile.mixins.json");
 		}
+
+		if (isPresent("charm", ">=2.0")) {
+			Mixins.addConfiguration("optifabric.compat.charm.mixins.json");
+		}
 	}
 
 	private static boolean isPresent(String modID) {
