@@ -1,7 +1,7 @@
 package me.modmuss50.optifabric.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,12 +15,8 @@ import me.modmuss50.optifabric.mod.OptifineVersion;
 
 @Mixin(CrashReport.class)
 abstract class CrashReportMixin {
-	@Shadow
-	public abstract CrashReportSection addElement(String name);
-
-	@Inject(method = "<init>", at = @At("RETURN"))
-	private void fillSystemDetails(CallbackInfo info) {
-		addElement("OptiFabric")
+	@Unique
+	private final CrashReportSection optifine = new CrashReportSection((CrashReport) (Object) this, "OptiFabric")
 			.add("OptiFine jar designed for", OptifineVersion.minecraftVersion)
 			.add("OptiFine jar version", OptifineVersion.version)
 			.add("OptiFine jar status", () -> {
@@ -64,5 +60,9 @@ abstract class CrashReportMixin {
 				}
 			})
 		;
+
+	@Inject(method = "addStackTrace", at = @At("RETURN"))
+	private void addStackTrace(StringBuilder builder, CallbackInfo info) {
+		optifine.addStackTrace(builder.append("\n\n"));
 	}
 }
