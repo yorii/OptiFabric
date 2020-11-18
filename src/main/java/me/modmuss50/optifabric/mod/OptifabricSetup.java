@@ -80,7 +80,7 @@ public class OptifabricSetup implements Runnable {
 		}
 
 		if (isPresent("origins", mod -> compareVersions(Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) ? ">=1.16-0.2.0" : ">=0.4.1", mod))) {//ElytraFeatureRenderer
-			if (isPresent("origins", mod -> !Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) || compareVersions(">=1.16.2-0.3.7", mod))) {
+			if (isPresent("origins", mod -> !Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) || compareVersions(">=1.16.2-0.4.0", mod))) {
 				Mixins.addConfiguration("optifabric.compat.origins.mixins.json");
 			}
 
