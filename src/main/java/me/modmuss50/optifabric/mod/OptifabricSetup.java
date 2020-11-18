@@ -79,13 +79,13 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.compat.now-playing.mixins.json");
 		}
 
-		if (isPresent("origins", mod -> compareVersions(Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) ? ">=1.16-0.2.0" : ">=0.4.1", mod))) {//ElytraFeatureRenderer
-			if (isPresent("origins", mod -> !Pattern.matches("^1\\.16(\\.\\d)?-", mod.getVersion().getFriendlyString()) || compareVersions(">=1.16.2-0.4.0", mod))) {
+		if (isPresent("origins", mod -> compareVersions(Pattern.compile("^1\\.16(\\.\\d)?-").matcher(mod.getVersion().getFriendlyString()).find() ? ">=1.16-0.2.0" : ">=0.4.1", mod))) {
+			if (isPresent("origins", mod -> !Pattern.compile("^1\\.16(\\.\\d)?-").matcher(mod.getVersion().getFriendlyString()).find() || compareVersions(">=1.16.3-0.4.0", mod))) {
 				Mixins.addConfiguration("optifabric.compat.origins.mixins.json");
 			}
 
-			injector.predictFuture(RemappingUtils.getClassName("class_979")).ifPresent(node -> {//ItemStack, LivingEntity
-				String desc = RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Z");
+			injector.predictFuture(RemappingUtils.getClassName("class_979")).ifPresent(node -> {//ElytraFeatureRenderer
+				String desc = RemappingUtils.mapMethodDescriptor("(Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Z"); //ItemStack, LivingEntity
 
 				for (MethodNode method : node.methods) {
 					if ("shouldRender".equals(method.name) && desc.equals(method.desc)) {
