@@ -129,7 +129,7 @@ public class OptifabricSetup implements Runnable {
 			Mixins.addConfiguration("optifabric.compat.hctm.mixins.json");
 		}
 
-		if (isPresent("mubble", "<1.3")) {
+		if (isPresent("mubble", "<4.0-pre5")) {
 			Mixins.addConfiguration("optifabric.compat.mubble.mixins.json");
 		}
 
