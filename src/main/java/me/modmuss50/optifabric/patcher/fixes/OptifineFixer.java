@@ -29,6 +29,9 @@ public class OptifineFixer {
 
 		//net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator
 		registerFix("class_778$class_780", new AmbientOcclusionCalculatorFix());
+		
+		//net/minecraft/client/render/block/BlockModelRenderer$I_have_no_idea_what_to_write_here
+		registerFix("class_778$class_776", new RenderBlockDamageFix());
 
 		//net/minecraft/client/Keyboard
 		registerFix("class_309", new KeyboardFix());
